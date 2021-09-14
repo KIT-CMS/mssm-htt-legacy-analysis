@@ -36,7 +36,9 @@ def channel_selection(channel, era):
         elif era == "2018":
             cuts.append(
                 ("pt_2>30"
-                 "&& (((isSingleMuon||isMC||isEmbedded) && ((pt_2>32 && pt_2<180 && fabs(eta_2)<2.1 && pt_1<25 && (trg_crossmuon_mu20tau27_hps == 1 || trg_crossmuon_mu20tau27 == 1)) || (pt_1>=25 && ((trg_singlemuon_27 == 1) || (trg_singlemuon_24 == 1)))))"
+                 # "&& (((isSingleMuon||isMC||isEmbedded) && ((pt_2>32 && pt_2<180 && fabs(eta_2)<2.1 && pt_1<25 && ((trg_crossmuon_mu20tau27_hps == 1) || (trg_crossmuon_mu20tau27 == 1))) || (pt_1>=25 && ((trg_singlemuon_27 == 1) || (trg_singlemuon_24 == 1)))))"
+                 "&& (((isMC||isEmbedded) && ((pt_2>32 && pt_2<180 && fabs(eta_2)<2.1 && pt_1<25 && (trg_crossmuon_mu20tau27_hps == 1)) || (pt_1>=25 && ((trg_singlemuon_27 == 1) || (trg_singlemuon_24 == 1)))))"
+                     "|| ((isSingleMuon) && ((pt_2>32 && pt_2<180 && fabs(eta_2)<2.1 && pt_1<25 && (((run>=317509)&&(trg_crossmuon_mu20tau27_hps == 1)) || ((run<317509)&&(trg_crossmuon_mu20tau27 == 1)))) || (pt_1>=25 && ((trg_singlemuon_27 == 1) || (trg_singlemuon_24 == 1)))))"
                      "|| ((isMC||isEmbedded) && (trg_singletau_trailing==1) && pt_2>=180 && fabs(eta_2)<2.1)"
                      "|| ((isTau) && !(pt_1>=25 && ((trg_singlemuon_27 == 1) || (trg_singlemuon_24 == 1))) && (trg_singletau_trailing==1) && pt_2>=180 && fabs(eta_2)<2.1))", "trg_selection"),
             )
@@ -69,7 +71,8 @@ def channel_selection(channel, era):
         elif era == "2018":
             cuts.append(
                 ("pt_2>30"
-                 "&& (((isSingleElectron||isMC||isEmbedded) && ((pt_2>35 && pt_2<180 && fabs(eta_2)<2.1 && pt_1>25 && pt_1<33 && (trg_crossele_ele24tau30_hps==1 || trg_crossele_ele24tau30==1)) || (pt_1 >=33 && ((trg_singleelectron_35==1) || (trg_singleelectron_32==1)))))"
+                 "&& (((isMC||isEmbedded) && ((pt_2>35 && pt_2<180 && fabs(eta_2)<2.1 && pt_1>25 && pt_1<33 && (trg_crossele_ele24tau30_hps==1)) || (pt_1 >=33 && ((trg_singleelectron_35==1) || (trg_singleelectron_32==1)))))"
+                     "|| ((isSingleElectron) && ((pt_2>35 && pt_2<180 && fabs(eta_2)<2.1 && pt_1>25 && pt_1<33 && (((run>=317509)&&(trg_crossele_ele24tau30_hps==1)) || ((run<317509)&&(trg_crossele_ele24tau30==1)))) || (pt_1 >=33 && ((trg_singleelectron_35==1) || (trg_singleelectron_32==1)))))"
                      "|| ((isMC||isEmbedded) && (trg_singletau_trailing==1) && pt_2>=180 && fabs(eta_2)<2.1)"
                      "|| ((isTau) && !(pt_1 >=33 && ((trg_singleelectron_35==1) || (trg_singleelectron_32==1))) && (trg_singletau_trailing==1) && pt_2>=180 && fabs(eta_2)<2.1))", "trg_selection"),
             )

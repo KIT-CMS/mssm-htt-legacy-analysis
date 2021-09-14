@@ -1,10 +1,18 @@
 from ntuple_processor import Histogram
 from ntuple_processor.utils import Selection
 
-m_sv_hist = Histogram("m_sv_puppi", "m_sv_puppi", [i for i in range(0, 255, 5)])
+m_sv_hist = Histogram("m_sv_puppi", "m_sv_puppi", [i for i in range(0, 305, 5)])
 mt_tot_hist = Histogram("mt_tot_puppi", "mt_tot_puppi", [i for i in list(range(0, 50, 50)) + list(range(50, 500, 10)) + list(range(500, 1000, 25)) + list(range(1000, 2000, 50)) + list(range(2000, 5100, 100))])
 histogram_nobtag = Histogram("mt_tot_puppi", "mt_tot_puppi", [0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000])
 histogram_btag = Histogram("mt_tot_puppi", "mt_tot_puppi", [0,60,80,100,120,140,160,180,200,250,300,350,400,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000])
+pt_tt_bins = [0,50,100,200]
+m_sv_bins_unrolled = range(0, 310, 10)
+unroll_low_mass_discr = ("(pt_tt_puppi > 0 && pt_tt_puppi <= 50 && m_sv_puppi < 300) * m_sv_puppi"
+                        "+ (pt_tt_puppi > 50 && pt_tt_puppi <= 100 && m_sv_puppi < 300) * (300. + m_sv_puppi)"
+                        "+ (pt_tt_puppi > 100 && pt_tt_puppi <= 200 && m_sv_puppi < 300) * (600. + m_sv_puppi)"
+                        "+ (pt_tt_puppi > 200 && m_sv_puppi < 300) * (900. + m_sv_puppi)"
+                        "+ (m_sv_puppi >= 300) * (-1.)")
+unroll_low_mass = Histogram("m_sv_VS_pt_tt", unroll_low_mass_discr, range(0, 1210, 10))
 
 
 lt_categorization_sm = [

@@ -560,6 +560,7 @@ _ff_variations_lt = [
 	"ff_total_syst_alt_func_{ch}{era}{shift}",
 	"ff_total_qcd_syst_bkg_{ch}{era}{shift}",
 	"ff_total_wjets_syst_bkg_{ch}{era}{shift}",
+        "ff_total_wjets_syst_extrap_{ch}{era}{shift}",
 ]
 #  Variations on the jet backgrounds estimated with the fake factor method.
 ff_variations_lt = [

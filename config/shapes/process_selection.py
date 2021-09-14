@@ -1,4 +1,4 @@
-from ntuple_processor.utils import Selection
+from ntuple_processor.utils import Selection, Weight
 
 
 """Base processes
@@ -703,6 +703,17 @@ def SUSYggH_process_selection(channel, era):
     SUSYggH_weights = HTT_base_process_selection(channel, era).weights + [
         ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
         ]
+    return Selection(name="SUSYggH", weights=SUSYggH_weights)
+
+def SUSYggH_powheg_process_selection(channel, era):
+    if era == "2017":
+        SUSYggH_weights = [weight if weight.name != "puweight" else Weight("puWeight_updated", "puweight") for weight in HTT_base_process_selection(channel, era).weights ]  + [
+            ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+            ]
+    else:
+        SUSYggH_weights = HTT_base_process_selection(channel, era).weights + [
+            ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+            ]
     return Selection(name="SUSYggH", weights=SUSYggH_weights)
 
 

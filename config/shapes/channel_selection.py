@@ -64,7 +64,7 @@ def channel_selection(channel, era):
         elif era == "2017":
             cuts.append(
                 ("pt_2>30"
-                 "&& (((isSingleElectron||isMC||isEmbedded) && ((pt_2>35 && pt_2<180 && fabs(eta_2)<2.1 && pt_1<28 && (trg_crossele_ele24tau30==1)) || (pt_1>=28 && ((trg_singleelectron_27==1) || (trg_singleelectron_32==1) || (trg_singleelectron_35==1)))))"
+                 "&& (((isSingleElectron||isMC||isEmbedded) && ((pt_2>35 && pt_2<180 && fabs(eta_2)<2.1 && pt_1<28 && (trg_crossele_ele24tau30==1 || (isEmbedded && (pt_1<40) && (fabs(eta_1)>1.479)))) || (pt_1>=28 && ((trg_singleelectron_27==1) || (trg_singleelectron_32==1) || (trg_singleelectron_35==1) || (isEmbedded && (pt_1<40) && (fabs(eta_1)>1.479))))))"
                      "|| ((isMC||isEmbedded) && (trg_singletau_trailing==1) && pt_2>=180 && fabs(eta_2)<2.1)"
                      "|| ((isTau) && !(pt_1>=28 && ((trg_singleelectron_27==1) || (trg_singleelectron_32==1) || (trg_singleelectron_35==1))) && (trg_singletau_trailing==1) && pt_2>=180 && fabs(eta_2)<2.1))", "trg_selection"),
             )

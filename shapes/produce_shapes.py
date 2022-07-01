@@ -538,6 +538,36 @@ def main(args):
                                                                                                                               SUSYggH_ht_contribution_selection,
                                                                                                                               SUSYggH_hb_contribution_selection]]
                                             for mass in susy_masses[era]["ggH"]},
+                # **{"gghpowheg{}".format(mass): [Unit(
+                #                             datasets["susyggHpowheg_{}".format(mass)], [
+                #                                 channel_selection(channel, era),
+                #                                 SUSYggH_process_selection(channel, era),
+                #                                 contribution_selection(channel),
+                #                                 ], [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])
+                #                                                                                for contribution_selection in [
+                #                                                                                                               SUSYggHpowheg_Ai_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_At_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_Ab_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_Hi_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_Ht_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_Hb_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_hi_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_ht_contribution_selection,
+                #                                                                                                               SUSYggHpowheg_hb_contribution_selection]]
+                #                             for mass in susy_masses[era]["ggHpowheg"]},
+                # **{"bbh{}".format(mass): [Unit(
+                #                                 datasets["susybbH_{}".format(mass)], [
+                #                                     channel_selection(channel, era),
+                #                                     SUSYbbH_process_selection(channel, era),
+                #                                     ],[control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])]
+                #                             for mass in susy_masses[era]["bbH"]},
+                # **{"bbhpowheg{}".format(mass): [Unit(
+                #                                 datasets["susybbHpowheg_{}".format(mass)], [
+                #                                     channel_selection(channel, era),
+                #                                     SUSYbbH_process_selection(channel, era),
+                #                                     Selection(name="corrGenWeight", weights=[("1./{}".format(gen_weights["bbH"][mass]), "generatorWeight_new")]),
+                #                                     ], [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])]
+                #                             for mass in susy_masses[era]["bbHpowheg"]},
                 }
         if channel in ["et", "mt"]:
             pass

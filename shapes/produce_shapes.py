@@ -338,26 +338,6 @@ def main(args):
                 #                 channel_selection(channel, era),
                 #                 ttH_process_selection(channel, era),
                 #                 category_selection], actions) for category_selection, actions in categorization[channel]],
-                # "gghww"  : [Unit(
-                #             datasets["ggHWW"], [
-                #                 channel_selection(channel, era),
-                #                 ggHWW_process_selection(channel, era),
-                #                 category_selection], actions) for category_selection, actions in categorization[channel]],
-                # "qqhww"  : [Unit(
-                #             datasets["qqHWW"], [
-                #                 channel_selection(channel, era),
-                #                 qqHWW_process_selection(channel, era),
-                #                 category_selection], actions) for category_selection, actions in categorization[channel]],
-                # "zhww"  : [Unit(
-                #             datasets["ZHWW"], [
-                #                 channel_selection(channel, era),
-                #                 ZHWW_process_selection(channel, era),
-                #                 category_selection], actions) for category_selection, actions in categorization[channel]],
-                # "whww"  : [Unit(
-                #             datasets["WHWW"], [
-                #                 channel_selection(channel, era),
-                #                 WHWW_process_selection(channel, era),
-                #                 category_selection], actions) for category_selection, actions in categorization[channel]],
                 "qqh95": [Unit(
                             datasets["qqH_95"], [
                                 channel_selection(channel, era),
@@ -433,7 +413,7 @@ def main(args):
                                                     category_selection], actions) for category_selection, actions in categorization[channel]]
                                             for mass in susy_masses[era]["bbHpowheg"]},
         }
-        if channel == "et":
+        if channel in ["et", "mt"]:
             pass
         else:
             analysis_units["w"] = [Unit(
@@ -441,6 +421,27 @@ def main(args):
                                             channel_selection(channel, era),
                                             W_process_selection(channel, era),
                                             category_selection], actions) for category_selection, actions in categorization[channel]]
+            if channel == "em":
+                analysis_units["gghww"] = [Unit(
+                            datasets["ggHWW"], [
+                                channel_selection(channel, era),
+                                ggHWW_process_selection(channel, era),
+                                category_selection], actions) for category_selection, actions in categorization[channel]]
+                analysis_units["qqhww"] = [Unit(
+                            datasets["qqHWW"], [
+                                channel_selection(channel, era),
+                                qqHWW_process_selection(channel, era),
+                                category_selection], actions) for category_selection, actions in categorization[channel]]
+                analysis_units["zhww"] = [Unit(
+                            datasets["ZHWW"], [
+                                channel_selection(channel, era),
+                                ZHWW_process_selection(channel, era),
+                                category_selection], actions) for category_selection, actions in categorization[channel]]
+                analysis_units["whww"] = [Unit(
+                            datasets["WHWW"], [
+                                channel_selection(channel, era),
+                                WHWW_process_selection(channel, era),
+                                category_selection], actions) for category_selection, actions in categorization[channel]]
         return analysis_units
 
     def get_control_units(channel, era, datasets):
@@ -538,7 +539,7 @@ def main(args):
                                                                                                                               SUSYggH_hb_contribution_selection]]
                                             for mass in susy_masses[era]["ggH"]},
                 }
-        if channel == "et":
+        if channel in ["et", "mt"]:
             pass
         else:
             control_units["w"] = [Unit(
@@ -562,7 +563,7 @@ def main(args):
                  "ggh", "qqh", "zh", "wh"} \
                 | set("gghpowheg{}".format(mass) for mass in susy_masses[args.era]["ggH"]) \
                 | set("bbhpowheg{}".format(mass) for mass in susy_masses[args.era]["bbH"])
-        if "et" in args.channels:
+        if "et" in args.channels or "mt" in args.channels:
             procS = procS - {"w"}
         # procS = {"data", "emb", "ztt", "zl", "zj", "ttt", "ttl", "ttj", "vvt", "vvl", "vvj", "w",
         #          "ggh", "qqh", "tth", "zh", "wh", "gghww", "qqhww", "zhww", "whww"} \

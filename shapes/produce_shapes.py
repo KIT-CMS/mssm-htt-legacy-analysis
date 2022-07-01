@@ -21,7 +21,7 @@ from config.shapes.category_selection import categorization
 # Variations for estimation of fake processes
 from config.shapes.variations import same_sign, same_sign_em, anti_iso_lt, anti_iso_tt, anti_iso_tt_mcl, abcd_method
 # Energy scale uncertainties
-from config.shapes.variations import tau_es_3prong, tau_es_3prong1pizero, tau_es_1prong, tau_es_1prong1pizero, emb_tau_es_3prong, emb_tau_es_3prong1pizero, emb_tau_es_1prong, emb_tau_es_1prong1pizero, jet_es, mu_fake_es_1prong, mu_fake_es_1prong1pizero, ele_es, ele_res, emb_e_es, ele_fake_es_1prong, ele_fake_es_1prong1pizero, ele_fake_es
+from config.shapes.variations import tau_es_3prong, tau_es_3prong1pizero, tau_es_1prong, tau_es_1prong1pizero, emb_tau_es_3prong, emb_tau_es_3prong1pizero, emb_tau_es_1prong, emb_tau_es_1prong1pizero, jet_es, mu_fake_es_1prong, mu_fake_es_1prong1pizero, ele_es, ele_res, emb_e_es, ele_fake_es_1prong, ele_fake_es_1prong1pizero, ele_fake_es, jet_res, jet_res_corr
 # MET related uncertainties.
 from config.shapes.variations import met_unclustered, recoil_resolution, recoil_response, emb_met_scale
 # efficiency uncertainties
@@ -618,6 +618,8 @@ def main(args):
             um.book([unit for d in {'ztt', 'zj', 'zl', 'w'} & procS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*recoil_resolution, *recoil_response], enable_check=args.enable_booking_check)
             um.book([unit for d in {'ztt', 'zl', 'zj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*zpt], enable_check=args.enable_booking_check)
             um.book([unit for d in {'ttt', 'ttl', 'ttj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*top_pt], enable_check=args.enable_booking_check)
+            um.book([unit for d in {'ttt', 'ttl', 'ttj', 'vvt', 'vvl', 'vvj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*jet_res_corr], enable_check=args.enable_booking_check)
+            um.book([unit for d in simulatedProcsDS[ch_] - {'ttt', 'ttl', 'ttj', 'vvt', 'vvl', 'vvj'} for unit in nominals[args.era]['units'][ch_][d]], [*jet_res], enable_check=args.enable_booking_check)
             um.book([unit for d in set("ggh{}".format(mass) for mass in susy_masses[args.era]["ggH"]) & procS \
                           for unit in nominals[args.era]['units'][ch_][d] if "ggA_t" in map(getattr, unit.selections, ["name"]*len(unit.selections))],
                           [*ggh_scale_ggA_t], enable_check=args.enable_booking_check)

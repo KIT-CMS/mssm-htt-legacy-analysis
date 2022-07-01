@@ -142,8 +142,16 @@ jet_es = [
         ChangeDataset("CMS_scale_j_RelativeBalDown", "jecUncRelativeBalDown"),
         ChangeDataset("CMS_scale_j_RelativeSample_EraUp", "jecUncRelativeSampleYearUp"),
         ChangeDataset("CMS_scale_j_RelativeSample_EraDown", "jecUncRelativeSampleYearDown"),
+        ]
+
+jet_res = [
         ChangeDataset("CMS_res_j_EraUp", "jerUncUp"),
         ChangeDataset("CMS_res_j_EraDown", "jerUncDown"),
+        ]
+
+jet_res_corr = [
+        ChangeDataset("CMS_res_j_EraUp", "jerUncCorrUp"),
+        ChangeDataset("CMS_res_j_EraDown", "jerUncCorrDown"),
         ]
 
 

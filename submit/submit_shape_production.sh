@@ -18,6 +18,8 @@ fi
 source utils/setup_susy_samples.sh $ERA
 source utils/setup_samples.sh $ERA
 source utils/setup_root.sh
+# FIXME: Hotfix to allow submission after sourcing LCG stack
+[[ -z "$CONDOR_CONFIG" ]] || unset CONDOR_CONFIG
 source utils/bashFunctionCollection.sh
 
 IFS="," read -a PROCS_ARR <<< $PROCESSES
@@ -27,17 +29,20 @@ do
     if [[ "$PROC" =~ "backgrounds" ]]
     then
         # BKG_PROCS="data,emb,ztt,zl,zj,ttt,ttl,ttj,vvt,vvl,vvj,w"
-        if [[ "$CHANNEL" == "et" -o "$CHANNEL" == "mt" ]]
-        then
-            BKG_PROCS="data,emb,zl,ttl,vvl,ttt"
+        if [[ "$CHANNEL" == "et" || "$CHANNEL" == "mt" ]]; then
+            BKG_PROCS="data,emb,zl,ztt,ttl,ttt,vvl,vvt"
         else
-            BKG_PROCS="data,emb,zl,ttl,vvl,ttt,w"
+            BKG_PROCS="data,emb,zl,ztt,,ttl,vvl,vvt,ttt,w"
         fi
         PROCESSES="$PROCESSES,$BKG_PROCS"
     elif [[ "$PROC" =~ "sm_signals" ]]
     then
-        # SIG_PROCS="ggh,qqh,zh,wh,tth,gghww,qqhww,whww,zhww"
-        SIG_PROCS="ggh,qqh,zh,wh"
+        if [[ "$CHANNEL" == "em" ]]; then
+            SIG_PROCS="ggh,qqh,zh,wh,gghww,qqhww,whww,zhww"
+            # SIG_PROCS="ggh,qqh,zh,wh,tth,gghww,qqhww,whww,zhww"
+        else
+            SIG_PROCS="ggh,qqh,zh,wh"
+        fi
         PROCESSES="$PROCESSES,$SIG_PROCS"
     elif [[ "$PROC" =~ "mssm_ggh_split1" ]]
     then

@@ -37,6 +37,7 @@ from config.shapes.variations import ff_variations_lt, ff_variations_tt, ff_vari
 # ggH reweighting variations
 from config.shapes.variations import ggh_scale_ggA_t,ggh_scale_ggA_b,ggh_scale_ggA_i,ggh_scale_ggh_t,ggh_scale_ggh_b,ggh_scale_ggh_i
 from config.shapes.variations import gghpowheg_scale_ggA_t,gghpowheg_scale_ggA_b,gghpowheg_scale_ggA_i,gghpowheg_scale_ggh_t,gghpowheg_scale_ggh_b,gghpowheg_scale_ggh_i
+from config.shapes.variations import emb_zpt_mass
 from config.shapes.control_binning import control_binning, minimal_control_plot_set
 
 logger = logging.getLogger("")
@@ -667,7 +668,7 @@ def main(args):
                 um.book([unit for d in dataS for unit in nominals[args.era]['units'][ch_][d]], [*ff_variations_lt], enable_check=args.enable_booking_check)
                 # um.book([unit for d in embS | leptonFakesS | trueTauBkgS for unit in nominals[args.era]['units'][ch_][d]], [*ff_variations_lt, *ff_variations_tau_es_lt], enable_check=args.enable_booking_check)
                 um.book([unit for d in embS | leptonFakesS | trueTauBkgS for unit in nominals[args.era]['units'][ch_][d]], [*ff_variations_lt], enable_check=args.enable_booking_check)
-                um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_id_eff_lt, *tau_id_eff_lt, *emb_decay_mode_eff_lt], enable_check=args.enable_booking_check)
+                um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_tau_id_eff_lt, *tau_id_eff_lt, *emb_decay_mode_eff_lt, *emb_zpt_mass], enable_check=args.enable_booking_check)
             if ch_ in ["et", "em"]:
                 um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*ele_es, *ele_res], enable_check=args.enable_booking_check)
                 um.book([unit for d in embS for unit in nominals[args.era]['units'][ch_][d]], [*emb_e_es], enable_check=args.enable_booking_check)

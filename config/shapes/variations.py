@@ -477,6 +477,11 @@ top_pt = [
         RemoveWeight("CMS_htt_ttbarShapeDown", "topPtReweightWeight")
         ]
 
+emb_zpt_mass = [
+        AddWeight("embed_zpt_mass_shapeUp", Weight("embedZpTMassWeight", "emb_zpt_mass_weight")),
+        AddWeight("embed_zpt_mass_shapeDown", Weight("(2.-embedZpTMassWeight)", "emb_zpt_mass_weight"))
+]
+
 _ff_variations_lt = [
         "ff_total_qcd_stat_njet0_jet_pt_low_unc1_{ch}{era}{shift}",
 	"ff_total_qcd_stat_njet0_jet_pt_low_unc2_{ch}{era}{shift}",

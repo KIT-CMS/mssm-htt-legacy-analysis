@@ -355,9 +355,14 @@ def __get_ZTT_cut(channel):
 def ZTT_embedded_process_selection(channel, era):
     ztt_embedded_weights = [
         ("generatorWeight*(generatorWeight<=1.0)", "simulation_sf"),  # Issue with way too large generator weights in 2016
-        ("muonEffTrgWeight*muonEffIDWeight_1*muonEffIDWeight_2", "scale_factor"),
+        ("muonEffTrgWeightIC*muonEffIDWeightIC_1*muonEffIDWeightIC_2", "scale_factor"),
     ]
     if "mt" in channel:
+        if "2018" in era:
+            ztt_embedded_weights = [
+                ("generatorWeight*(generatorWeight<=1.0)", "simulation_sf"),  # Issue with way too large generator weights in 2016
+                ("muonEffTrgWeightIC*muonEffIDWeight_1*muonEffIDWeight_2", "scale_factor"),  # Bug during ntuple production lead to overwrite of KIT ID weights by IC ones instead of writing it to new variable.
+                ]
         ztt_embedded_weights.extend([
             ("gen_match_1==4 && gen_match_2==5","emb_veto"),
             ("pt_2/genMatchedLep2Pt < 1.5","high_fakemet_veto"),

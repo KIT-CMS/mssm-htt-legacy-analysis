@@ -656,6 +656,23 @@ def main(args):
                           [*gghpowheg_scale_ggh_b], enable_check=args.enable_booking_check)
             um.book([unit for d in set("gghpowheg{}".format(mass) for mass in susy_masses[args.era]["ggHpowheg"]) & procS \
                           for unit in nominals[args.era]['units'][ch_][d] if "ggh_t" in map(getattr, unit.selections, ["name"]*len(unit.selections)) or "ggH_t" in map(getattr, unit.selections, ["name"]*len(unit.selections))], [*gghpowheg_scale_ggh_t], enable_check=args.enable_booking_check)
+            um.book([unit for d in {"ggh95"} & procS \
+                          for unit in nominals[args.era]['units'][ch_][d] if "ggA_t" in map(getattr, unit.selections, ["name"]*len(unit.selections))],
+                          [*gghpowheg_scale_ggA_t], enable_check=args.enable_booking_check)
+            um.book([unit for d in {"ggh95"} & procS \
+                          for unit in nominals[args.era]['units'][ch_][d] if "ggA_b" in map(getattr, unit.selections, ["name"]*len(unit.selections))],
+                          [*gghpowheg_scale_ggA_b], enable_check=args.enable_booking_check)
+            um.book([unit for d in {"ggh95"} & procS \
+                          for unit in nominals[args.era]['units'][ch_][d] if "ggA_i" in map(getattr, unit.selections, ["name"]*len(unit.selections))],
+                          [*gghpowheg_scale_ggA_i], enable_check=args.enable_booking_check)
+            um.book([unit for d in {"ggh95"} & procS \
+                          for unit in nominals[args.era]['units'][ch_][d] if "ggh_i" in map(getattr, unit.selections, ["name"]*len(unit.selections)) or "ggH_i" in map(getattr, unit.selections, ["name"]*len(unit.selections))],
+                          [*gghpowheg_scale_ggh_i], enable_check=args.enable_booking_check)
+            um.book([unit for d in {"ggh95"} & procS \
+                          for unit in nominals[args.era]['units'][ch_][d] if "ggh_b" in map(getattr, unit.selections, ["name"]*len(unit.selections)) or "ggH_b" in map(getattr, unit.selections, ["name"]*len(unit.selections))],
+                          [*gghpowheg_scale_ggh_b], enable_check=args.enable_booking_check)
+            um.book([unit for d in {"ggh95"} & procS \
+                          for unit in nominals[args.era]['units'][ch_][d] if "ggh_t" in map(getattr, unit.selections, ["name"]*len(unit.selections)) or "ggH_t" in map(getattr, unit.selections, ["name"]*len(unit.selections))], [*gghpowheg_scale_ggh_t], enable_check=args.enable_booking_check)
             # Book variations common to multiple channels.
             if ch_ in ["et", "mt", "tt"]:
                 um.book([unit for d in (trueTauBkgS | leptonFakesS | signalsS) - {"zl"} for unit in nominals[args.era]['units'][ch_][d]], [*tau_es_3prong, *tau_es_3prong1pizero, *tau_es_1prong, *tau_es_1prong1pizero], enable_check=args.enable_booking_check)

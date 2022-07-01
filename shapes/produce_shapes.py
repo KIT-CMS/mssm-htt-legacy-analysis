@@ -13,7 +13,7 @@ from ntuple_processor.utils import Selection
 from config.shapes.channel_selection import channel_selection
 from config.shapes.file_names import files
 from config.shapes.process_selection import DY_process_selection, TT_process_selection, VV_process_selection, W_process_selection, ZTT_process_selection, ZL_process_selection, ZJ_process_selection, TTT_process_selection, TTL_process_selection, TTJ_process_selection, VVT_process_selection, VVJ_process_selection, VVL_process_selection, ggH125_process_selection, qqH125_process_selection, ZTT_embedded_process_selection, ZH_process_selection, WH_process_selection, ggHWW_process_selection, qqHWW_process_selection, ZHWW_process_selection, WHWW_process_selection, ttH_process_selection
-from config.shapes.process_selection import SUSYbbH_process_selection, SUSYggH_process_selection, SUSYggH_Ai_contribution_selection, SUSYggH_At_contribution_selection, SUSYggH_Ab_contribution_selection, SUSYggH_Hi_contribution_selection, SUSYggH_Ht_contribution_selection, SUSYggH_Hb_contribution_selection, SUSYggH_hi_contribution_selection, SUSYggH_ht_contribution_selection, SUSYggH_hb_contribution_selection
+from config.shapes.process_selection import SUSYbbH_process_selection, SUSYggH_process_selection, SUSYggH_powheg_process_selection, SUSYggH_Ai_contribution_selection, SUSYggH_At_contribution_selection, SUSYggH_Ab_contribution_selection, SUSYggH_Hi_contribution_selection, SUSYggH_Ht_contribution_selection, SUSYggH_Hb_contribution_selection, SUSYggH_hi_contribution_selection, SUSYggH_ht_contribution_selection, SUSYggH_hb_contribution_selection
 from config.shapes.process_selection import SUSYggHpowheg_Ai_contribution_selection, SUSYggHpowheg_At_contribution_selection, SUSYggHpowheg_Ab_contribution_selection, SUSYggHpowheg_Hi_contribution_selection, SUSYggHpowheg_Ht_contribution_selection, SUSYggHpowheg_Hb_contribution_selection, SUSYggHpowheg_hi_contribution_selection, SUSYggHpowheg_ht_contribution_selection, SUSYggHpowheg_hb_contribution_selection
 from config.shapes.process_selection import ggH95_process_selection, qqH95_process_selection
 # from config.shapes.category_selection import categorization
@@ -232,6 +232,12 @@ def main(args):
                     pass
                 else:
                     return False
+            # Add PUReweighting friends only for powheg susy ggh samples.
+            if "PUReweighting" in friend:
+                if re.match("(susygg)h", dataset.lower()) and "powheg" in dataset.lower():
+                    pass
+                else:
+                    return False
             return True
         for key, names in files[era][channel].items():
             datasets[key] = dataset_from_artusoutput(
@@ -397,7 +403,7 @@ def main(args):
                 **{"gghpowheg{}".format(mass): [Unit(
                                             datasets["susyggHpowheg_{}".format(mass)], [
                                                 channel_selection(channel, era),
-                                                SUSYggH_process_selection(channel, era),
+                                                SUSYggH_powheg_process_selection(channel, era),
                                                 contribution_selection(channel),
                                                 Selection(name="corrGenWeight", weights=[("1./{}".format(gen_weights["ggH"][mass]), "generatorWeight_new")]),
                                                 category_selection], actions) for category_selection, actions in categorization[channel]

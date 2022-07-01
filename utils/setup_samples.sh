@@ -32,25 +32,28 @@ then
     SVFit_Friends=$SVFit_Friends_2016
     FF_Friends=$FF_Friends_2016
     NLOReweighting_Friends=$NLOReweighting_Friends_2016
+    PUReweighting_Friends=""
 elif [[ $E == *"2017"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2017
     SVFit_Friends=$SVFit_Friends_2017
     FF_Friends=$FF_Friends_2017
     NLOReweighting_Friends=$NLOReweighting_Friends_2017
+    PUReweighting_Friends=$PUReweighting_Friends_2017
 elif [[ $E == *"2018"* ]]
 then
     ARTUS_OUTPUTS=$ARTUS_OUTPUTS_2018
     SVFit_Friends=$SVFit_Friends_2018
     FF_Friends=$FF_Friends_2018
     NLOReweighting_Friends=$NLOReweighting_Friends_2018
+    PUReweighting_Friends=""
 fi
 
 ### channels specific friend tree.
 # Used for example to process the event channel without including the fakefactor friends
-ARTUS_FRIENDS_EM="$SVFit_Friends $NLOReweighting_Friends"
-ARTUS_FRIENDS_ET="$SVFit_Friends $NLOReweighting_Friends"
-ARTUS_FRIENDS_MT="$SVFit_Friends $NLOReweighting_Friends"
-ARTUS_FRIENDS_TT="$SVFit_Friends $NLOReweighting_Friends"
-ARTUS_FRIENDS="$SVFit_Friends $NLOReweighting_Friends"
+ARTUS_FRIENDS_EM="$SVFit_Friends $PUReweighting_Friends $NLOReweighting_Friends"
+ARTUS_FRIENDS_ET="$SVFit_Friends $PUReweighting_Friends $NLOReweighting_Friends"
+ARTUS_FRIENDS_MT="$SVFit_Friends $PUReweighting_Friends $NLOReweighting_Friends"
+ARTUS_FRIENDS_TT="$SVFit_Friends $PUReweighting_Friends $NLOReweighting_Friends"
+ARTUS_FRIENDS="$SVFit_Friends $PUReweighting_Friends $NLOReweighting_Friends"
 ARTUS_FRIENDS_FAKE_FACTOR=$FF_Friends

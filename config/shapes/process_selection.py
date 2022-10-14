@@ -634,6 +634,8 @@ def ggh_stitching_weight(era):
                   "(htxs_stage1p1cat>=107&&htxs_stage1p1cat<=109)*4.91e-8+"
                   "(htxs_stage1p1cat>=110&&htxs_stage1p1cat<=113)*7.90e-9"
                   ")*0.98409104275716*(abs(crossSectionPerEventWeight - 0.00538017) > 1e-5) + numberGeneratedEventsWeight*0.005307836*(abs(crossSectionPerEventWeight - 0.00538017) < 1e-5)","ggh_stitching_weight")
+        # weight = ("1.0/(9259000 + 2921180)*0.98409104275716*crossSectionPerEventWeight*(abs(crossSectionPerEventWeight - 0.00538017) > 1e-5) + numberGeneratedEventsWeight*0.005307836*(abs(crossSectionPerEventWeight - 0.00538017) < 1e-5)","ggh_stitching_weight")
+        # Cross section weight in case supplemental samples are not used.
     elif era == "2018":
         weight = ("(((htxs_stage1p1cat==100||htxs_stage1p1cat==102||htxs_stage1p1cat==103)*crossSectionPerEventWeight*numberGeneratedEventsWeight+"
                   "(htxs_stage1p1cat==101)*2.09e-8+"
@@ -642,6 +644,8 @@ def ggh_stitching_weight(era):
                   "(htxs_stage1p1cat>=107&&htxs_stage1p1cat<=109)*4.90e-8+"
                   "(htxs_stage1p1cat>=110&&htxs_stage1p1cat<=113)*9.69e-9"
                   ")*0.98409104275716*(abs(crossSectionPerEventWeight - 0.00538017) > 1e-5) + numberGeneratedEventsWeight*0.005307836*(abs(crossSectionPerEventWeight - 0.00538017) < 1e-5))","ggh_stitching_weight")
+        # weight = ("(crossSectionPerEventWeight*numberGeneratedEventsWeight*0.98409104275716*(abs(crossSectionPerEventWeight - 0.00538017) > 1e-5) + numberGeneratedEventsWeight*0.005307836*(abs(crossSectionPerEventWeight - 0.00538017) < 1e-5))","ggh_stitching_weight")
+        # Cross section weight in case supplemental samples are not used.
     return weight
 
 

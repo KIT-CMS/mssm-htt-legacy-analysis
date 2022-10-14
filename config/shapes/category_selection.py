@@ -2,17 +2,18 @@ from ntuple_processor import Histogram
 from ntuple_processor.utils import Selection
 
 m_sv_hist = Histogram("m_sv_puppi", "m_sv_puppi", [i for i in range(0, 305, 5)])
+mt_1_hist = Histogram("mt_1_puppi", "mt_1_puppi", [i for i in range(0, 145, 5)])
 mt_tot_hist = Histogram("mt_tot_puppi", "mt_tot_puppi", [i for i in list(range(0, 50, 50)) + list(range(50, 500, 10)) + list(range(500, 1000, 25)) + list(range(1000, 2000, 50)) + list(range(2000, 5100, 100))])
 histogram_nobtag = Histogram("mt_tot_puppi", "mt_tot_puppi", [0,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000])
 histogram_btag = Histogram("mt_tot_puppi", "mt_tot_puppi", [0,60,80,100,120,140,160,180,200,250,300,350,400,500,600,700,800,900,1100,1300,1500,1700,1900,2100,2300,2500,2700,2900,3100,3300,3500,3700,3900,4100,4300,4500,4700,5000])
 pt_tt_bins = [0,50,100,200]
-m_sv_bins_unrolled = range(0, 310, 10)
-unroll_low_mass_discr = ("(pt_tt_puppi > 0 && pt_tt_puppi <= 50 && m_sv_puppi < 300) * m_sv_puppi"
-                        "+ (pt_tt_puppi > 50 && pt_tt_puppi <= 100 && m_sv_puppi < 300) * (300. + m_sv_puppi)"
-                        "+ (pt_tt_puppi > 100 && pt_tt_puppi <= 200 && m_sv_puppi < 300) * (600. + m_sv_puppi)"
-                        "+ (pt_tt_puppi > 200 && m_sv_puppi < 300) * (900. + m_sv_puppi)"
+m_sv_bins_unrolled = range(0, 31, 1)
+unroll_low_mass_discr = ("(pt_tt_puppi > 0 && pt_tt_puppi <= 50 && m_sv_puppi < 300) * m_sv_puppi/10."
+                        "+ (pt_tt_puppi > 50 && pt_tt_puppi <= 100 && m_sv_puppi < 300) * (30. + m_sv_puppi/10.)"
+                        "+ (pt_tt_puppi > 100 && pt_tt_puppi <= 200 && m_sv_puppi < 300) * (60. + m_sv_puppi/10.)"
+                        "+ (pt_tt_puppi > 200 && m_sv_puppi < 300) * (90. + m_sv_puppi/10.)"
                         "+ (m_sv_puppi >= 300) * (-1.)")
-unroll_low_mass = Histogram("m_sv_VS_pt_tt", unroll_low_mass_discr, range(0, 1210, 10))
+unroll_low_mass = Histogram("m_sv_VS_pt_tt", unroll_low_mass_discr, range(0, 121, 1))
 
 
 lt_categorization_sm = [
@@ -128,19 +129,53 @@ em_categorization_sm = [
 ]
 
 lt_categorization = [
+    # MSSM high mass categories
     (Selection(name="Nbtag0_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40", "category_selection")]),
             [histogram_nobtag]),
+            [histogram_nobtag, m_sv_hist, unroll_low_mass]),
     (Selection(name="Nbtag0_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
             [histogram_nobtag]),
+            [histogram_nobtag, m_sv_hist, unroll_low_mass]),
+    (Selection(name="NbtagGt1_MTLt40",           cuts = [("nbtag>=1&&mt_1_puppi<40", "category_selection")]),
+            [histogram_btag]),
+            [histogram_btag, m_sv_hist, unroll_low_mass]),
+    (Selection(name="NbtagGt1_MT40To70",         cuts = [("nbtag>=1&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
+            [histogram_btag]),
+            [histogram_btag, m_sv_hist, unroll_low_mass]),
+
     # MSSM and SM analysis categories
     (Selection(name="Nbtag0_MTLt40_MHGt250",     cuts = [("nbtag==0&&mt_1_puppi<40&&m_sv_puppi>=250", "category_selection")]),
             [histogram_nobtag]),
     (Selection(name="Nbtag0_MT40To70_MHGt250",   cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&m_sv_puppi>=250", "category_selection")]),
             [histogram_nobtag]),
-    (Selection(name="NbtagGt1_MTLt40",           cuts = [("nbtag>=1&&mt_1_puppi<40", "category_selection")]),
-            [histogram_btag]),
-    (Selection(name="NbtagGt1_MT40To70",         cuts = [("nbtag>=1&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
-            [histogram_btag]),
+
+    # Categorization for plots for paper
+    # (Selection(name="Nbtag0",                   cuts = [("nbtag==0", "category_selection")]),
+    #         [mt_1_hist]),
+    # (Selection(name="NbtagGt1",                 cuts = [("nbtag>=1", "category_selection")]),
+    #         [mt_1_hist]),
+
+    # # Categorisation of no b tag categories for leptoquark analysis cross check
+    # (Selection(name="Nbtag0_Njets0_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40&&(njets==0||(njets>=1&&jpt_1<50))", "category_selection")]),
+    #         [histogram_nobtag]),
+    #         # [histogram_nobtag, m_sv_hist, unroll_low_mass]),
+    # (Selection(name="Nbtag0_NjetsGt1_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40&&(njets>=1&&jpt_1>=50)", "category_selection")]),
+    #         [histogram_nobtag]),
+    # (Selection(name="Nbtag0_Njets0_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&(njets==0||(njets>=1&&jpt_1<50))", "category_selection")]),
+    #         [histogram_nobtag]),
+    #         # [histogram_nobtag, m_sv_hist, unroll_low_mass]),
+    # (Selection(name="Nbtag0_NjetsGt1_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&(njets>=1&&jpt_1>=50)", "category_selection")]),
+    #         [histogram_nobtag]),
+
+    # # Categorisation used for further study of low mass excess
+    # (Selection(name="Nbtag0_MTLt40_Rest",             cuts = [("nbtag==0&&mt_1_puppi<40&&(njets<2||mjj<=400)", "category_selection")]),
+    #         [unroll_low_mass]),
+    # (Selection(name="Nbtag0_MT40To70_Rest",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&(njets<2||mjj<=400)", "category_selection")]),
+    #         [unroll_low_mass]),
+    # (Selection(name="Nbtag0_MTLt40_NjetsGt2_MjjGt400",             cuts = [("nbtag==0&&mt_1_puppi<40&&njets>=2&&mjj>400", "category_selection")]),
+    #         [m_sv_hist]),
+    # (Selection(name="Nbtag0_MT40To70_NjetsGt2_MjjGt400",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70&&njets>=2&&mjj>400", "category_selection")]),
+    #         [m_sv_hist]),
 ]
 
 tt_categorization = [

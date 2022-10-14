@@ -33,6 +33,17 @@ _process_map = {
     "ggA_i": "SUSYggH-ggA_i",
     "ggA_t": "SUSYggH-ggA_t",
     "ggA_b": "SUSYggH-ggA_b",
+    "ggh_i_95": "ggH95-ggh_i",
+    "ggh_t_95": "ggH95-ggh_t",
+    "ggh_b_95": "ggH95-ggh_b",
+    "ggH_i_95": "ggH95-ggH_i",
+    "ggH_t_95": "ggH95-ggH_t",
+    "ggH_b_95": "ggH95-ggH_b",
+    "ggA_i_95": "ggH95-ggA_i",
+    "ggA_t_95": "ggH95-ggA_t",
+    "ggA_b_95": "ggH95-ggA_b",
+    "qqH95": "qqH95",
+    "ggH95": "ggH95",
 }
 
 def parse_args():
@@ -269,21 +280,26 @@ def main(args):
     input_file.Close()
 
     # Loop over map and create the output file.
+    outpath = args.output
+    if args.mc:
+        outpath = args.output + "_mc"
     for channel in hist_map:
-        ofname = os.path.join(args.output,
+        ofname = os.path.join(outpath,
                               "{ERA}-{CHANNELS}-synced-MSSM.root".format(
                                   CHANNELS=channel,
                                   ERA=args.era))
         if args.gof:
-            ofname = os.path.join(args.output,
+            ofname = os.path.join(outpath,
                                   "htt_{{category}}.inputs-mssm-vs-sm-Run{ERA}.root".format(
                                       ERA=args.era))
+        if args.mc:
+            ofname = ofname.replace(".root", "_mc.root")
 
         logging.info("Writing histograms to file %s with %s processes",
                      ofname, args.num_processes)
 
-        if not os.path.exists(args.output):
-            os.mkdir(args.output)
+        if not os.path.exists(outpath):
+            os.mkdir(outpath)
         with multiprocessing.Pool(args.num_processes) as pool:
             pool.map(write_hists_per_category,
                      [(*item, channel, ofname, args.input) for item in sorted(hist_map[channel].items())])

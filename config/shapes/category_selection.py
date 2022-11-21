@@ -131,17 +131,13 @@ em_categorization_sm = [
 lt_categorization = [
     # MSSM high mass categories
     (Selection(name="Nbtag0_MTLt40",             cuts = [("nbtag==0&&mt_1_puppi<40", "category_selection")]),
-            [histogram_nobtag]),
-            [histogram_nobtag, m_sv_hist, unroll_low_mass]),
+            [histogram_nobtag, unroll_low_mass]),
     (Selection(name="Nbtag0_MT40To70",           cuts = [("nbtag==0&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
-            [histogram_nobtag]),
-            [histogram_nobtag, m_sv_hist, unroll_low_mass]),
+            [histogram_nobtag, m_sv_hist]),
     (Selection(name="NbtagGt1_MTLt40",           cuts = [("nbtag>=1&&mt_1_puppi<40", "category_selection")]),
-            [histogram_btag]),
-            [histogram_btag, m_sv_hist, unroll_low_mass]),
+            [histogram_btag, unroll_low_mass]),
     (Selection(name="NbtagGt1_MT40To70",         cuts = [("nbtag>=1&&mt_1_puppi>=40&&mt_1_puppi<70", "category_selection")]),
-            [histogram_btag]),
-            [histogram_btag, m_sv_hist, unroll_low_mass]),
+            [histogram_btag, m_sv_hist]),
 
     # MSSM and SM analysis categories
     (Selection(name="Nbtag0_MTLt40_MHGt250",     cuts = [("nbtag==0&&mt_1_puppi<40&&m_sv_puppi>=250", "category_selection")]),

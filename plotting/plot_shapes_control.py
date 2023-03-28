@@ -92,7 +92,7 @@ def main(info):
         "tt": "#tau_{#font[42]{h}}#tau_{#font[42]{h}}"
     }
     if args.linear == True:
-        split_value = 0.1
+        split_value = 0.0
     else:
         if args.normalize_by_bin_width:
             split_value = 10001
@@ -195,19 +195,19 @@ def main(info):
         stype = args.draw_jet_fake_variation
     for index,process in enumerate(bkg_processes):
         if index == 0:
-            total_bkg = rootfile.get(channel, process, shape_type=stype).Clone()
+            total_bkg = rootfile.get(channel, process, category=args.category_postfix, shape_type=stype).Clone()
         else:
-            total_bkg.Add(rootfile.get(channel, process, shape_type=stype))
+            total_bkg.Add(rootfile.get(channel, process, category=args.category_postfix, shape_type=stype))
         if process in ["jetFakesEMB", "jetFakes"] and channel == "tt":
-            total_bkg.Add(rootfile.get(channel, "wFakes", shape_type=stype))
-            jetfakes_hist = rootfile.get(channel, process, shape_type=stype)
+            total_bkg.Add(rootfile.get(channel, "wFakes", category=args.category_postfix, shape_type=stype))
+            jetfakes_hist = rootfile.get(channel, process, category=args.category_postfix, shape_type=stype)
             jetfakes_hist.Add(
-                rootfile.get(channel, "wFakes", shape_type=stype))
+                rootfile.get(channel, "wFakes", category=args.category_postfix, shape_type=stype))
             plot.add_hist(
                 jetfakes_hist, process, "bkg")
         else:
             plot.add_hist(
-                rootfile.get(channel, process, shape_type=stype), process, "bkg")
+                rootfile.get(channel, process, category=args.category_postfix, shape_type=stype), process, "bkg")
         plot.setGraphStyle(
             process, "hist", fillcolor=styles.color_dict[process])
 
@@ -226,7 +226,7 @@ def main(info):
         fillcolor=styles.color_dict["unc"],
         linecolor=0)
 
-    plot.add_hist(rootfile.get(channel, "data", shape_type=stype), "data_obs")
+    plot.add_hist(rootfile.get(channel, "data", category=args.category_postfix, shape_type=stype), "data_obs")
     data_norm = plot.subplot(0).get_hist("data_obs").Integral()
     plot.subplot(0).get_hist("data_obs").GetXaxis().SetMaxDigits(4)
     plot.subplot(0).setGraphStyle("data_obs", "e0")
@@ -236,100 +236,106 @@ def main(info):
     else:
         plot.subplot(1).setGraphStyle("data_obs", "e0")
 
-    if "mm" not in channel:
-        # get signal histograms
-        plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
-        for i in plot_idx_to_add_signal:
-            ggH = rootfile.get(channel, "ggH125").Clone()
-            qqH = rootfile.get(channel, "qqH125").Clone()
-            # VH = rootfile.get(channel, "VH125").Clone()
-            # ttH = rootfile.get(channel, "ttH125").Clone()
-            # HWW = rootfile.get(channel, "HWW").Clone()
-            if ggH.Integral() > 0:
-                ggH_scale = 10
-            else:
-                ggH_scale = 0.0
-            if qqH.Integral() > 0:
-                qqH_scale = 10
-            else:
-                qqH_scale = 0.0
-            # if VH.Integral() > 0:
-            #     VH_scale = 10
-            # else:
-            #     VH_scale = 0.0
-            # if ttH.Integral() > 0:
-            #     ttH_scale = 10
-            # else:
-            #     ttH_scale = 0.0
-            # if HWW.Integral() > 0:
-            #     HWW_scale = 10
-            # else:
-            #     HWW_scale = 0
+    # if "mm" not in channel:
+    #     # get signal histograms
+    #     plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
+    #     for i in plot_idx_to_add_signal:
+    #         ggH = rootfile.get(channel, "ggH125").Clone()
+    #         qqH = rootfile.get(channel, "qqH125").Clone()
+    #         # VH = rootfile.get(channel, "VH125").Clone()
+    #         # ttH = rootfile.get(channel, "ttH125").Clone()
+    #         # HWW = rootfile.get(channel, "HWW").Clone()
+    #         if ggH.Integral() > 0:
+    #             ggH_scale = 10
+    #         else:
+    #             ggH_scale = 0.0
+    #         if qqH.Integral() > 0:
+    #             qqH_scale = 10
+    #         else:
+    #             qqH_scale = 0.0
+    #         # if VH.Integral() > 0:
+    #         #     VH_scale = 10
+    #         # else:
+    #         #     VH_scale = 0.0
+    #         # if ttH.Integral() > 0:
+    #         #     ttH_scale = 10
+    #         # else:
+    #         #     ttH_scale = 0.0
+    #         # if HWW.Integral() > 0:
+    #         #     HWW_scale = 10
+    #         # else:
+    #         #     HWW_scale = 0
 
-            if i in [0,1]:
-                ggH.Scale(ggH_scale)
-                qqH.Scale(qqH_scale)
-                # VH.Scale(VH_scale)
-                # ttH.Scale(ttH_scale)
-                # HWW.Scale(HWW_scale)
-            plot.subplot(i).add_hist(ggH, "ggH")
-            plot.subplot(i).add_hist(ggH, "ggH_top")
-            plot.subplot(i).add_hist(qqH, "qqH")
-            plot.subplot(i).add_hist(qqH, "qqH_top")
-            # plot.subplot(i).add_hist(VH, "VH")
-            # plot.subplot(i).add_hist(VH, "VH_top")
-            # plot.subplot(i).add_hist(ttH, "ttH")
-            # plot.subplot(i).add_hist(ttH, "ttH_top")
-            # plot.subplot(i).add_hist(HWW, "HWW")
-            # plot.subplot(i).add_hist(HWW, "HWW_top")
+    #         if i in [0,1]:
+    #             ggH.Scale(ggH_scale)
+    #             qqH.Scale(qqH_scale)
+    #             # VH.Scale(VH_scale)
+    #             # ttH.Scale(ttH_scale)
+    #             # HWW.Scale(HWW_scale)
+    #         plot.subplot(i).add_hist(ggH, "ggH")
+    #         plot.subplot(i).add_hist(ggH, "ggH_top")
+    #         plot.subplot(i).add_hist(qqH, "qqH")
+    #         plot.subplot(i).add_hist(qqH, "qqH_top")
+    #         # plot.subplot(i).add_hist(VH, "VH")
+    #         # plot.subplot(i).add_hist(VH, "VH_top")
+    #         # plot.subplot(i).add_hist(ttH, "ttH")
+    #         # plot.subplot(i).add_hist(ttH, "ttH_top")
+    #         # plot.subplot(i).add_hist(HWW, "HWW")
+    #         # plot.subplot(i).add_hist(HWW, "HWW_top")
 
-    if "mm" not in channel:
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "ggH", "hist", linecolor=styles.color_dict["ggH"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("ggH_top", "hist", linecolor=0)
-        plot.subplot(0 if args.linear else 1).setGraphStyle(
-            "qqH", "hist", linecolor=styles.color_dict["qqH"], linewidth=3)
-        plot.subplot(0 if args.linear else 1).setGraphStyle("qqH_top", "hist", linecolor=0)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle(
-        #     "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle(
-        #     "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle(
-        #     "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
-        # plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
+    # if "mm" not in channel:
+    #     plot.subplot(0 if args.linear else 1).setGraphStyle(
+    #         "ggH", "hist", linecolor=styles.color_dict["ggH"], linewidth=3)
+    #     plot.subplot(0 if args.linear else 1).setGraphStyle("ggH_top", "hist", linecolor=0)
+    #     plot.subplot(0 if args.linear else 1).setGraphStyle(
+    #         "qqH", "hist", linecolor=styles.color_dict["qqH"], linewidth=3)
+    #     plot.subplot(0 if args.linear else 1).setGraphStyle("qqH_top", "hist", linecolor=0)
+    #     # plot.subplot(0 if args.linear else 1).setGraphStyle(
+    #     #     "VH", "hist", linecolor=styles.color_dict["VH"], linewidth=3)
+    #     # plot.subplot(0 if args.linear else 1).setGraphStyle("VH_top", "hist", linecolor=0)
+    #     # plot.subplot(0 if args.linear else 1).setGraphStyle(
+    #     #     "ttH", "hist", linecolor=styles.color_dict["ttH"], linewidth=3)
+    #     # plot.subplot(0 if args.linear else 1).setGraphStyle("ttH_top", "hist", linecolor=0)
+    #     # plot.subplot(0 if args.linear else 1).setGraphStyle(
+    #     #     "HWW", "hist", linecolor=styles.color_dict["HWW"], linewidth=3)
+    #     # plot.subplot(0 if args.linear else 1).setGraphStyle("HWW_top", "hist", linecolor=0)
 
 
     # assemble ratio
     if "mm" not in channel:
-        bkg_ggH = plot.subplot(2).get_hist("ggH")
-        bkg_qqH = plot.subplot(2).get_hist("qqH")
-        bkg_ggH.Add(plot.subplot(2).get_hist("total_bkg"))
-        bkg_qqH.Add(plot.subplot(2).get_hist("total_bkg"))
-        plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH")
-        plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH_top")
-        plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH")
-        plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH_top")
-        plot.subplot(2).setGraphStyle(
-            "bkg_ggH",
-            "hist",
-            linecolor=styles.color_dict["ggH"],
-            linewidth=3)
-        plot.subplot(2).setGraphStyle("bkg_ggH_top", "hist", linecolor=0)
-        plot.subplot(2).setGraphStyle(
-            "bkg_qqH",
-            "hist",
-            linecolor=styles.color_dict["qqH"],
-            linewidth=3)
-        plot.subplot(2).setGraphStyle("bkg_qqH_top", "hist", linecolor=0)
+        # bkg_ggH = plot.subplot(2).get_hist("ggH")
+        # bkg_qqH = plot.subplot(2).get_hist("qqH")
+        # bkg_ggH.Add(plot.subplot(2).get_hist("total_bkg"))
+        # bkg_qqH.Add(plot.subplot(2).get_hist("total_bkg"))
+        # plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH")
+        # plot.subplot(2).add_hist(bkg_ggH, "bkg_ggH_top")
+        # plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH")
+        # plot.subplot(2).add_hist(bkg_qqH, "bkg_qqH_top")
+        # plot.subplot(2).setGraphStyle(
+        #     "bkg_ggH",
+        #     "hist",
+        #     linecolor=styles.color_dict["ggH"],
+        #     linewidth=3)
+        # plot.subplot(2).setGraphStyle("bkg_ggH_top", "hist", linecolor=0)
+        # plot.subplot(2).setGraphStyle(
+        #     "bkg_qqH",
+        #     "hist",
+        #     linecolor=styles.color_dict["qqH"],
+        #     linewidth=3)
+        # plot.subplot(2).setGraphStyle("bkg_qqH_top", "hist", linecolor=0)
 
+        # plot.subplot(2).normalize([
+        #     "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
+        #     "bkg_qqH_top", "data_obs"
+        # ], "total_bkg")
         plot.subplot(2).normalize([
-            "total_bkg", "bkg_ggH", "bkg_ggH_top", "bkg_qqH",
-            "bkg_qqH_top", "data_obs"
+            "total_bkg", "data_obs"
         ], "total_bkg")
     else:
         plot.subplot(2).normalize(["total_bkg", "data_obs"], "total_bkg")
+
+    print("data: ", plot.subplot(0).get_hist("data_obs").GetBinContent(1))
+    print("bkg: ", plot.subplot(0).get_hist("total_bkg").GetBinContent(1))
 
     # stack background processes
     plot.create_stack(bkg_processes, "stack")
@@ -345,14 +351,14 @@ def main(info):
         max(1.6 * plot.subplot(0).get_hist("data_obs").GetMaximum(),
             split_dict[channel] * 2))
 
-    log_quantities = ["ME_ggh", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_vbf_vs_ggh", "ME_ggh_vs_Z"]
+    log_quantities = ["ME_ggh", "ME_vbf", "ME_z2j_1", "ME_z2j_2", "ME_q2v1", "ME_q2v2", "ME_vbf_vs_ggh", "ME_ggh_vs_Z", "mt_tot_puppi"]
     if variable in log_quantities:
         plot.subplot(0).setLogY()
         plot.subplot(0).setYlims(
-            1.0,
+            0.001,
             1000 * plot.subplot(0).get_hist("data_obs").GetMaximum())
 
-    plot.subplot(2).setYlims(0.75, 1.45)
+    plot.subplot(2).setYlims(0.60, 1.40)
     if channel == "mm":
         plot.subplot(0).setLogY()
         plot.subplot(0).setYlims(1, 10**10)
@@ -363,7 +369,7 @@ def main(info):
             "")  # otherwise number labels are not drawn on axis
         plot.subplot(1).setLogY()
     # Check if variables should be plotted with log x axis
-    log_x_variables = ["puppimet"]
+    log_x_variables = ["puppimet", "mt_tot_puppi", "m_vis", "pt_1", "pt_2"]
     if variable in log_x_variables:
         plot.subplot(0).setLogX()
         plot.subplot(1).setLogX()
@@ -438,8 +444,9 @@ def main(info):
                 0, process, styles.legend_label_dict[process.replace("TTL", "TT").replace("VVL", "VV").replace("NLO","")], 'f')
         plot.legend(i).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         if "mm" not in channel and args.draw_jet_fake_variation is None:
-            plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%s #times gg#rightarrowH"%str(int(ggH_scale)), 'l')
-            plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
+            pass
+            # plot.legend(i).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i], "%s #times gg#rightarrowH"%str(int(ggH_scale)), 'l')
+            # plot.legend(i).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i], "%s #times qq#rightarrowH"%str(int(qqH_scale)), 'l')
             # plot.legend(i).add_entry(0 if args.linear else 1, "VH%s" % suffix[i], "%s #times V(lep)H"%str(int(VH_scale)), 'l')
             # plot.legend(i).add_entry(0 if args.linear else 1, "ttH%s" % suffix[i], "%s #times ttH"%str(int(ttH_scale)), 'l')
             # # plot.legend(i).add_entry(0 if args.linear else 1, "HWW%s" % suffix[i], "%s #times H#rightarrowWW"%str(int(HWW_scale)), 'l')
@@ -454,10 +461,11 @@ def main(info):
             reference_subplot=2, pos=1, width=0.6, height=0.03)
         plot.legend(i + 2).add_entry(0, "data_obs", "Observed", 'PE2L')
         if "mm" not in channel and args.draw_jet_fake_variation is None:
-            plot.legend(i + 2).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i],
-                                         "ggH+bkg.", 'l')
-            plot.legend(i + 2).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i],
-                                         "qqH+bkg.", 'l')
+            pass
+            # plot.legend(i + 2).add_entry(0 if args.linear else 1, "ggH%s" % suffix[i],
+            #                              "ggH+bkg.", 'l')
+            # plot.legend(i + 2).add_entry(0 if args.linear else 1, "qqH%s" % suffix[i],
+            #                              "qqH+bkg.", 'l')
         plot.legend(i + 2).add_entry(0, "total_bkg", "Bkg. stat. unc.", 'f')
         plot.legend(i + 2).setNColumns(4)
     plot.legend(2).Draw()

@@ -11,6 +11,7 @@ import copy
 import yaml
 import distutils.util
 import logging
+from array import array
 logger = logging.getLogger("")
 
 
@@ -111,6 +112,28 @@ def check_for_zero_bins(hist):
             hist.SetBinContent(ibin, 0)
     return hist
 
+
+def rebin_hist_for_logX(hist, xlow=1.0):
+    bins = []
+    contents= []
+    errors = []
+    # Get low bin edges, contents and errors of all bins.
+    for i in range(1, hist.GetNbinsX()+1):
+        bins.append(hist.GetBinLowEdge(i))
+        contents.append(hist.GetBinContent(i))
+        errors.append(hist.GetBinError(i))
+    # Add low edge of overflow bin as high edge of last regular bin.
+    bins.append(hist.GetBinLowEdge((hist.GetNbinsX()+1)))
+    # Check if first bin extents to zero and if it does change it to larger value
+    if bins[0] == 0.:
+        bins[0] = xlow
+    # Create the new histogram
+    bin_arr = array("f", bins)
+    hist_capped = ROOT.TH1F(hist.GetName(), hist.GetTitle(), len(bin_arr)-1, bin_arr)
+    for i in range(0, hist_capped.GetNbinsX()):
+        hist_capped.SetBinContent(i+1, contents[i])
+        hist_capped.SetBinError(i+1, errors[i])
+    return hist_capped
 
 
 def main(args):
@@ -235,6 +258,13 @@ def main(args):
         logger.critical("Era {} is not implemented.".format(args.era))
         raise Exception
     print(channel_categories)
+    # Add dictionary for low x-values for rebinning of histograms to
+    # get nice plot with truncated x-axis when x-axis is logarithmic.
+    rebin_xlow = {
+        "mt_tot_puppi": 30.,
+        "puppimet": 1.,
+    }
+
     plots = []
     for channel in args.channels:
         for category in channel_categories[channel]:
@@ -261,12 +291,20 @@ def main(args):
             for process in bkg_processes:
                 try:
                     if channel == "tt" and process == "jetFakes":
-                        jetfakes = rootfile.get(era, channel, category, process).Clone()
-                        jetfakes.Add(rootfile.get(era, channel, category, "wFakes"))
+                        if args.gof_variable in rebin_xlow.keys():
+                            jetfakes = rebin_hist_for_logX(rootfile.get(era, channel, category, process).Clone(), xlow=rebin_xlow[args.gof_variable])
+                            jetfakes.Add(rebin_hist_for_logX(rootfile.get(era, channel, category, "wFakes"), xlow=rebin_xlow[args.gof_variable]))
+                        else:
+                            jetfakes = rootfile.get(era, channel, category, process).Clone()
+                            jetfakes.Add(rootfile.get(era, channel, category, "wFakes"))
                         plot.add_hist(jetfakes, process, "bkg")
                     else:
-                        plot.add_hist(
-                            rootfile.get(era, channel, category, process), process, "bkg")
+                        if args.gof_variable in rebin_xlow.keys():
+                            plot.add_hist(
+                                rebin_hist_for_logX(rootfile.get(era, channel, category, process), xlow=rebin_xlow[args.gof_variable]), process, "bkg")
+                        else:
+                            plot.add_hist(
+                                rootfile.get(era, channel, category, process), process, "bkg")
                     plot.setGraphStyle(
                         process, "hist", fillcolor=styles.color_dict[process])
                 except:
@@ -276,14 +314,24 @@ def main(args):
             plot_idx_to_add_signal = [0,2] if args.linear else [1,2]
             for i in plot_idx_to_add_signal:
                 try:
-                    plot.subplot(i).add_hist(check_for_zero_bins(
-                        rootfile.get(era, channel, category, "ggH125")), "ggH")
-                    plot.subplot(i).add_hist(check_for_zero_bins(
-                        rootfile.get(era, channel, category, "ggH125")), "ggH_top")
-                    plot.subplot(i).add_hist(check_for_zero_bins(
-                        rootfile.get(era, channel, category, "qqH125")), "qqH")
-                    plot.subplot(i).add_hist(check_for_zero_bins(
-                        rootfile.get(era, channel, category, "qqH125")), "qqH_top")
+                    if args.gof_variable in rebin_xlow.keys():
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rebin_hist_for_logX(rootfile.get(era, channel, category, "ggH125"), xlow=rebin_xlow[args.gof_variable])), "ggH")
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rebin_hist_for_logX(rootfile.get(era, channel, category, "ggH125"), xlow=rebin_xlow[args.gof_variable])), "ggH_top")
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rebin_hist_for_logX(rootfile.get(era, channel, category, "qqH125"), xlow=rebin_xlow[args.gof_variable])), "qqH")
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rebin_hist_for_logX(rootfile.get(era, channel, category, "qqH125"), xlow=rebin_xlow[args.gof_variable])), "qqH_top")
+                    else:
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rootfile.get(era, channel, category, "ggH125")), "ggH")
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rootfile.get(era, channel, category, "ggH125")), "ggH_top")
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rootfile.get(era, channel, category, "qqH125")), "qqH")
+                        plot.subplot(i).add_hist(check_for_zero_bins(
+                            rootfile.get(era, channel, category, "qqH125")), "qqH_top")
                     if not args.plot_restricted_signals:
                         if isinstance(rootfile.get(era, channel, category, "ZH125"), ROOT.TH1):
                             VHhist = rootfile.get(era, channel, category, "ZH125").Clone("VH")
@@ -315,9 +363,16 @@ def main(args):
             # get observed data and total background histograms
             # NOTE: With CMSSW_8_1_0 the TotalBkg definition has changed.
             print("plot.add_hist(rootfile.get("+era+", "+channel+", "+category+', "data_obs")')
-            plot.add_hist(
-                rootfile.get(era, channel, category, "data_obs"), "data_obs")
-            total_bkg = check_for_zero_bins(rootfile.get(era, channel, category, "TotalBkg"))
+            if args.gof_variable in rebin_xlow.keys():
+                plot.add_hist(
+                    rebin_hist_for_logX(rootfile.get(era, channel, category, "data_obs"), xlow=rebin_xlow[args.gof_variable]), "data_obs")
+            else:
+                plot.add_hist(
+                    rootfile.get(era, channel, category, "data_obs"), "data_obs")
+            if args.gof_variable in rebin_xlow.keys():
+                total_bkg = check_for_zero_bins(rebin_hist_for_logX(rootfile.get(era, channel, category, "TotalBkg"), xlow=rebin_xlow[args.gof_variable]))
+            else:
+                total_bkg = check_for_zero_bins(rootfile.get(era, channel, category, "TotalBkg"))
             #ggHHist = rootfile.get(era, channel, category, "ggH")
             #qqHHist = rootfile.get(era, channel, category, "qqH")
             #total_bkg.Add(ggHHist, -1)
@@ -382,8 +437,15 @@ def main(args):
 
             # normalize stacks by bin-width
             if args.normalize_by_bin_width:
-                plot.subplot(0).normalizeByBinWidth()
-                plot.subplot(1).normalizeByBinWidth()
+                widths = None
+                if args.gof_variable in rebin_xlow.keys():
+                    hist_for_rebinning = rootfile.get(era, channel, category, "data_obs")
+                    widths = []
+		    for i in range(hist_for_rebinning.GetNbinsX()):
+                        widths.append(hist_for_rebinning.GetBinWidth(i+1))
+                    # normalize stacks by bin-width
+                plot.subplot(0).normalizeByBinWidth(widths=widths)
+                plot.subplot(1).normalizeByBinWidth(widths=widths)
 
             # set axes limits and labels
             plot.subplot(0).setYlims(
@@ -407,7 +469,7 @@ def main(args):
                 plot.subplot(1).setYlabel(
                     "")  # otherwise number labels are not drawn on axis
             if args.gof_variable != None:
-                gof_log_vars = []
+                gof_log_vars = ["mt_tot_puppi", "m_vis", "pt_1", "pt_2", "puppimet"]
                 if args.gof_variable in gof_log_vars:
                     plot.subplot(0).setLogX()
                     plot.subplot(1).setLogX()
@@ -433,8 +495,16 @@ def main(args):
                 plot.subplot(2).setXlabel(x_label)
             else:
                 plot.subplot(2).setXlabel("NN output")
+            norm_varnames = {
+                "mt_tot_puppi": "m_{T}^{tot}",
+                "puppimet": "p_{T}^{miss}",
+                "m_vis": "m_{#tau#tau}^{vis}",
+                "pt_1": "p_{T}^{#mu}",
+                "pt_2": "p_{T}^{#tau_{h}}",
+                "m_sv_puppi": "m_{#tau#tau}",
+            }
             if args.normalize_by_bin_width:
-                plot.subplot(0).setYlabel("dN/d(%s)"%args.gof_variable)
+                plot.subplot(0).setYlabel("dN/d(%s)"% (args.gof_variable if args.gof_variable not in norm_varnames else norm_varnames[args.gof_variable]))
             else:
                 plot.subplot(0).setYlabel("N_{events}")
 

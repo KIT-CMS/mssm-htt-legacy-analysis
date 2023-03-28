@@ -13,23 +13,23 @@ fi
 # Load submit splits of susy samples.
 source utils/setup_susy_samples.sh $ERA
 source utils/bashFunctionCollection.sh
+source utils/setup_root.sh
 
 BASE="output/shapes"
 
-for CH in ${CHANNELS[@]}
-do
+for CH in ${CHANNELS[@]}; do
     DIRNAME=${BASE}/${ERA}-${CH}-${PREFIX}-shapes-${TAG}
     echo "[INFO] Creating output dir $DIRNAME..."
     mkdir $DIRNAME
-    if [[ "$PREFIX" =~ "analysis" ]]
-    then 
+    if [[ "$PREFIX" =~ "analysis" ]]; then
         echo "[INFO] Adding outputs of background and sm signal jobs..."
         # hadd -j 5 -n 600 ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttj,ttl,ttt,vvj,vvl,vvt,w,zj,zl,ztt,ggh,gghww,qqh,qqhww,tth,wh,whww,zh,zhww)/*.root
-        if [[ "$CH" == "et" -o "$CH" == "mt" ]]
-        then
-            hadd -j 5 -n 600 ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttl,ttt,vvl,zl,ggh,qqh,wh,zh)/*.root
+        if [[ "$CH" == "et" || "$CH" == "mt" ]]; then
+            hadd -n 600 -f ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttl,ttt,vvl,vvt,zl,ztt,ggh,ggh95,qqh,qqh95,wh,zh)/*.root
+        elif [[ "$CH" == "tt" ]]; then
+            hadd -n 600 -f ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttl,ttt,vvl,vvt,w,zl,ztt,ggh,ggh95,qqh,qqh95,wh,zh)/*.root
         else
-            hadd -j 5 -n 600 ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttl,ttt,vvl,w,zl,ggh,qqh,wh,zh)/*.root
+            hadd -n 600 -f ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttl,ttt,vvl,vvt,w,zl,ztt,ggh,ggh95,qqh,qqh95,wh,zh,gghww,qqhww,whww,zhww)/*.root
         fi
         # echo "[INFO] Adding outputs of background jobs..."
         # hadd -j 5 -n 600 ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-data,emb,ttj,ttl,ttt,vvj,vvl,vvt,w,zj,zl,ztt/*.root
@@ -55,7 +55,7 @@ do
                                                            # ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-sm_signals.root \
     else
         echo "[INFO] Adding outputs of background and sm signal jobs..."
-        hadd -n 600 ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttj,ttl,ttt,vvj,vvl,vvt,w,zj,zl,ztt,ggh,gghww,qqh,qqhww,tth,wh,whww,zh,zhww)/*.root
+        hadd ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root output/shapes/${PREFIX}_unit_graphs-${ERA}-${CH}-$(sort_string data,emb,ttl,ttt,vvl,vvt,zl,ztt,ggh,qqh,wh,zh,gghpowheg100,gghpowheg1200)/*.root
         mv ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}-bkg_sm.root ${DIRNAME}/shapes-${PREFIX}-${ERA}-${CH}.root
     fi
 done

@@ -13,11 +13,15 @@ if [[ -z $5 ]]
 then
     USE_MC=0
 fi
+outfolder=output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-control/
+[[ "${USE_MC}" == "1" ]] && outfolder=output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-mc-control/
 
 MorphingCatVariables --base-path=output/shapes/${ERA}-${CHANNEL}-${TAG}-gof-synced_shapes/ \
 		     --category=${CHANNEL}_${VARIABLE} \
 		     --variable=${VARIABLE} \
 	    	     --verbose=1 \
-	    	     --output_folder=output/datacards/${ERA}-${CHANNEL}-${VARIABLE}-control/ \
+	    	     --output_folder=${outfolder} \
                      --use_mc=${USE_MC} \
+                     --manual_rebinning=1 \
+                     --sm_gg_fractions ${CMSSW_BASE}/src/CombineHarvester/MSSMvsSMRun2Legacy/data/higgs_pt_reweighting_fullRun2.root \
 	    	     --era=${ERA}

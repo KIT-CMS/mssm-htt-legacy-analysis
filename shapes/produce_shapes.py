@@ -521,53 +521,63 @@ def main(args):
                        channel_selection(channel, era),
                        qqH125_process_selection(channel, era)],
                        [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])],
-                **{"ggh{}".format(mass): [Unit(
-                                            datasets["susyggH_{}".format(mass)], [
-                                                channel_selection(channel, era),
-                                                SUSYggH_process_selection(channel, era),
-                                                contribution_selection(channel),
-                                                ], [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])
-                                                                                               for contribution_selection in [
-                                                                                                                              SUSYggH_Ai_contribution_selection,
-                                                                                                                              SUSYggH_At_contribution_selection,
-                                                                                                                              SUSYggH_Ab_contribution_selection,
-                                                                                                                              SUSYggH_Hi_contribution_selection,
-                                                                                                                              SUSYggH_Ht_contribution_selection,
-                                                                                                                              SUSYggH_Hb_contribution_selection,
-                                                                                                                              SUSYggH_hi_contribution_selection,
-                                                                                                                              SUSYggH_ht_contribution_selection,
-                                                                                                                              SUSYggH_hb_contribution_selection]]
-                                            for mass in susy_masses[era]["ggH"]},
-                # **{"gghpowheg{}".format(mass): [Unit(
-                #                             datasets["susyggHpowheg_{}".format(mass)], [
+                "wh"  : [Unit(
+                            datasets["WH"], [
+                                channel_selection(channel, era),
+                                WH_process_selection(channel, era)],
+                                [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])],
+                "zh"  : [Unit(
+                            datasets["ZH"], [
+                                channel_selection(channel, era),
+                                ZH_process_selection(channel, era)],
+                                [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])],
+                # **{"ggh{}".format(mass): [Unit(
+                #                             datasets["susyggH_{}".format(mass)], [
                 #                                 channel_selection(channel, era),
                 #                                 SUSYggH_process_selection(channel, era),
                 #                                 contribution_selection(channel),
                 #                                 ], [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])
                 #                                                                                for contribution_selection in [
-                #                                                                                                               SUSYggHpowheg_Ai_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_At_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_Ab_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_Hi_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_Ht_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_Hb_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_hi_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_ht_contribution_selection,
-                #                                                                                                               SUSYggHpowheg_hb_contribution_selection]]
-                #                             for mass in susy_masses[era]["ggHpowheg"]},
+                #                                                                                                               SUSYggH_Ai_contribution_selection,
+                #                                                                                                               SUSYggH_At_contribution_selection,
+                #                                                                                                               SUSYggH_Ab_contribution_selection,
+                #                                                                                                               SUSYggH_Hi_contribution_selection,
+                #                                                                                                               SUSYggH_Ht_contribution_selection,
+                #                                                                                                               SUSYggH_Hb_contribution_selection,
+                #                                                                                                               SUSYggH_hi_contribution_selection,
+                #                                                                                                               SUSYggH_ht_contribution_selection,
+                #                                                                                                               SUSYggH_hb_contribution_selection]]
+                #                             for mass in susy_masses[era]["ggH"]},
+                **{"gghpowheg{}".format(mass): [Unit(
+                                            datasets["susyggHpowheg_{}".format(mass)], [
+                                                channel_selection(channel, era),
+                                                SUSYggH_process_selection(channel, era),
+                                                contribution_selection(channel),
+                                                ], [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])
+                                                                                               for contribution_selection in [
+                                                                                                                              SUSYggHpowheg_Ai_contribution_selection,
+                                                                                                                              SUSYggHpowheg_At_contribution_selection,
+                                                                                                                              SUSYggHpowheg_Ab_contribution_selection,
+                                                                                                                              SUSYggHpowheg_Hi_contribution_selection,
+                                                                                                                              SUSYggHpowheg_Ht_contribution_selection,
+                                                                                                                              SUSYggHpowheg_Hb_contribution_selection,
+                                                                                                                              SUSYggHpowheg_hi_contribution_selection,
+                                                                                                                              SUSYggHpowheg_ht_contribution_selection,
+                                                                                                                              SUSYggHpowheg_hb_contribution_selection]]
+                                            for mass in susy_masses[era]["ggHpowheg"]},
                 # **{"bbh{}".format(mass): [Unit(
                 #                                 datasets["susybbH_{}".format(mass)], [
                 #                                     channel_selection(channel, era),
                 #                                     SUSYbbH_process_selection(channel, era),
                 #                                     ],[control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])]
                 #                             for mass in susy_masses[era]["bbH"]},
-                # **{"bbhpowheg{}".format(mass): [Unit(
-                #                                 datasets["susybbHpowheg_{}".format(mass)], [
-                #                                     channel_selection(channel, era),
-                #                                     SUSYbbH_process_selection(channel, era),
-                #                                     Selection(name="corrGenWeight", weights=[("1./{}".format(gen_weights["bbH"][mass]), "generatorWeight_new")]),
-                #                                     ], [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])]
-                #                             for mass in susy_masses[era]["bbHpowheg"]},
+                **{"bbhpowheg{}".format(mass): [Unit(
+                                                datasets["susybbHpowheg_{}".format(mass)], [
+                                                    channel_selection(channel, era),
+                                                    SUSYbbH_process_selection(channel, era),
+                                                    Selection(name="corrGenWeight", weights=[("1./{}".format(gen_weights["bbH"][mass]), "generatorWeight_new")]),
+                                                    ], [control_binning[channel][v] for v in set(control_binning[channel].keys()) & set(args.control_plot_set)])]
+                                            for mass in susy_masses[era]["bbHpowheg"]},
                 }
         if channel in ["et", "mt"]:
             pass
@@ -646,6 +656,7 @@ def main(args):
             # um.book([unit for d in {"ggh"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*ggh_acceptance], enable_check=args.enable_booking_check)
             # um.book([unit for d in {"qqh"} & procS for unit in nominals[args.era]['units'][ch_][d]], [*qqh_acceptance], enable_check=args.enable_booking_check)
 
+            # um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_es, *met_unclustered, *btag_eff, *mistag_eff], enable_check=args.enable_booking_check)
             um.book([unit for d in simulatedProcsDS[ch_] for unit in nominals[args.era]['units'][ch_][d]], [*jet_es, *met_unclustered], enable_check=args.enable_booking_check)
             um.book([unit for d in {'ztt', 'zj', 'zl', 'w'} & procS | signalsS for unit in nominals[args.era]['units'][ch_][d]], [*recoil_resolution, *recoil_response], enable_check=args.enable_booking_check)
             um.book([unit for d in {'ztt', 'zl', 'zj'} & procS for unit in nominals[args.era]['units'][ch_][d]], [*zpt], enable_check=args.enable_booking_check)
